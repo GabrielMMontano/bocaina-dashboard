@@ -21,6 +21,8 @@ def _headers() -> dict:
         "Authorization": f"Bearer {k}",
         "apikey": k,
         "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Prefer": "return=representation",
     }
 
 @st.cache_data(ttl=300)

@@ -39,7 +39,11 @@ def query(table: str, select: str = "*", filters: dict | None = None,
     if filters:
         params.update(filters)
     url = f"{SUPABASE_URL}/rest/v1/{table}"
-    r = requests.get(url, headers=_headers(), params=params, timeout=30)
+    try:
+        r = requests.get(url, headers=_headers(), params=params, timeout=30)
+    except requests.RequestException as exc:
+        st.error(f"Erro de conexão ao consultar `{table}`: {exc}")
+        return pd.DataFrame()
     if not r.ok:
         st.error(f"Erro ao consultar `{table}`: HTTP {r.status_code} — {r.text[:300]}")
         return pd.DataFrame()

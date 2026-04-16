@@ -204,7 +204,11 @@ def load_top10(data_ref: str) -> pd.DataFrame:
             df[c] = pd.to_numeric(df[c], errors="coerce")
     return df
 
-df_top = load_top10(data_deb)
+if not data_deb:
+    st.warning("Não foi possível determinar a data de referência para o Top 10.")
+    df_top = pd.DataFrame()
+else:
+    df_top = load_top10(data_deb)
 
 if not df_top.empty:
     df_top["taxa_mtm_pct"] = pd.to_numeric(df_top["taxa_mtm_pct"], errors="coerce").round(2)

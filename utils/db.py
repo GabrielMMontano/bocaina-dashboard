@@ -35,8 +35,14 @@ def query(table: str, select: str = "*", filters: dict | None = None,
         params.update(filters)
     url = f"{SUPABASE_URL}/rest/v1/{table}"
     r = requests.get(url, headers=_headers(), params=params, timeout=30)
-    r.raise_for_status()
-    return pd.DataFrame(r.json())
+    if not r.ok:
+        st.error(f"Erro ao consultar `{table}`: HTTP {r.status_code} — {r.text[:300]}")
+        return pd.DataFrame()
+    data = r.json()
+    if isinstance(data, dict) and "message" in data:
+        st.error(f"Supabase erro em `{table}`: {data.get('message','')}")
+        return pd.DataFrame()
+    return pd.DataFrame(data)
 
 @st.cache_data(ttl=300)
 def latest_date(table: str, col: str = "data_ref") -> str:

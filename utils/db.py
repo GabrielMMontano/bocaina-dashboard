@@ -8,10 +8,15 @@ load_dotenv()
 
 SUPABASE_URL = "https://jrmjtfpledyuvwvwigyw.supabase.co"
 
+# Chave pública (anon) — segura para expor, RLS habilitado
+_ANON_KEY_DEFAULT = (
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    ".eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpybWp0ZnBsZWR5dXZ3dndpZ3l3"
+    "Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxOTEyODgsImV4cCI6MjA5MTc2NzI4OH0"
+    ".s1vor5gyfgGm08UovtYzpxwzQNgJLLikiOzFsOZEM18"
+)
+
 def _key() -> str:
-    # Tenta st.secrets primeiro (Streamlit Cloud), depois .env (local)
-    # Preferência: SUPABASE_ANON_KEY (seguro para apps públicas com RLS)
-    # Fallback: SUPABASE_SERVICE_KEY (apenas para transição — remover após migrar RLS)
     key = ""
     try:
         key = (st.secrets.get("SUPABASE_ANON_KEY", "")
@@ -23,7 +28,7 @@ def _key() -> str:
         key = (os.getenv("SUPABASE_ANON_KEY", "")
                or os.getenv("SUPABASE_PUBLISHABLE_KEY", "")
                or os.getenv("SUPABASE_SERVICE_KEY", ""))
-    return key
+    return key or _ANON_KEY_DEFAULT
 
 def _headers() -> dict:
     k = _key()

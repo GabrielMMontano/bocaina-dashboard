@@ -9,23 +9,26 @@ load_dotenv()
 SUPABASE_URL = "https://jrmjtfpledyuvwvwigyw.supabase.co"
 
 def _key() -> str:
-    # Streamlit Cloud: usa st.secrets; local: usa .env
+    # Tenta st.secrets primeiro (Streamlit Cloud), depois .env (local)
+    key = ""
     try:
-        return st.secrets["SUPABASE_SERVICE_KEY"]
+        key = st.secrets.get("SUPABASE_SERVICE_KEY", "")
     except Exception:
-        return os.getenv("SUPABASE_SERVICE_KEY", "")
+        pass
+    if not key:
+        key = os.getenv("SUPABASE_SERVICE_KEY", "")
+    return key
 
 def _headers() -> dict:
     k = _key()
     return {
         "Authorization": f"Bearer {k}",
         "apikey": k,
-        "Content-Type": "application/json",
         "Accept": "application/json",
-        "Prefer": "return=representation",
+        "Content-Type": "application/json",
     }
 
-@st.cache_data(ttl=300)
+# Sem @st.cache_data aqui — o cache fica nas funções load() de cada página
 def query(table: str, select: str = "*", filters: dict | None = None,
           order: str | None = None, limit: int | None = None) -> pd.DataFrame:
     params: dict = {"select": select}
@@ -42,7 +45,7 @@ def query(table: str, select: str = "*", filters: dict | None = None,
         return pd.DataFrame()
     data = r.json()
     if isinstance(data, dict) and "message" in data:
-        st.error(f"Supabase erro em `{table}`: {data.get('message','')}")
+        st.error(f"Supabase erro em `{table}`: {data.get('message', '')}")
         return pd.DataFrame()
     return pd.DataFrame(data)
 

@@ -15,11 +15,13 @@ def _key() -> str:
     key = ""
     try:
         key = (st.secrets.get("SUPABASE_ANON_KEY", "")
+               or st.secrets.get("SUPABASE_PUBLISHABLE_KEY", "")
                or st.secrets.get("SUPABASE_SERVICE_KEY", ""))
     except Exception:
         pass
     if not key:
         key = (os.getenv("SUPABASE_ANON_KEY", "")
+               or os.getenv("SUPABASE_PUBLISHABLE_KEY", "")
                or os.getenv("SUPABASE_SERVICE_KEY", ""))
     return key
 

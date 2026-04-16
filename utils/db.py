@@ -10,13 +10,17 @@ SUPABASE_URL = "https://jrmjtfpledyuvwvwigyw.supabase.co"
 
 def _key() -> str:
     # Tenta st.secrets primeiro (Streamlit Cloud), depois .env (local)
+    # Preferência: SUPABASE_ANON_KEY (seguro para apps públicas com RLS)
+    # Fallback: SUPABASE_SERVICE_KEY (apenas para transição — remover após migrar RLS)
     key = ""
     try:
-        key = st.secrets.get("SUPABASE_SERVICE_KEY", "")
+        key = (st.secrets.get("SUPABASE_ANON_KEY", "")
+               or st.secrets.get("SUPABASE_SERVICE_KEY", ""))
     except Exception:
         pass
     if not key:
-        key = os.getenv("SUPABASE_SERVICE_KEY", "")
+        key = (os.getenv("SUPABASE_ANON_KEY", "")
+               or os.getenv("SUPABASE_SERVICE_KEY", ""))
     return key
 
 def _headers() -> dict:
@@ -39,7 +43,11 @@ def query(table: str, select: str = "*", filters: dict | None = None,
     if filters:
         params.update(filters)
     url = f"{SUPABASE_URL}/rest/v1/{table}"
-    r = requests.get(url, headers=_headers(), params=params, timeout=30)
+    try:
+        r = requests.get(url, headers=_headers(), params=params, timeout=30)
+    except requests.RequestException as exc:
+        st.error(f"Erro de conexão ao consultar `{table}`: {exc}")
+        return pd.DataFrame()
     if not r.ok:
         st.error(f"Erro ao consultar `{table}`: HTTP {r.status_code} — {r.text[:300]}")
         return pd.DataFrame()

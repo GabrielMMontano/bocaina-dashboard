@@ -10,13 +10,17 @@ SUPABASE_URL = "https://jrmjtfpledyuvwvwigyw.supabase.co"
 
 def _key() -> str:
     # Tenta st.secrets primeiro (Streamlit Cloud), depois .env (local)
+    # Preferência: SUPABASE_ANON_KEY (seguro para apps públicas com RLS)
+    # Fallback: SUPABASE_SERVICE_KEY (apenas para transição — remover após migrar RLS)
     key = ""
     try:
-        key = st.secrets.get("SUPABASE_SERVICE_KEY", "")
+        key = (st.secrets.get("SUPABASE_ANON_KEY", "")
+               or st.secrets.get("SUPABASE_SERVICE_KEY", ""))
     except Exception:
         pass
     if not key:
-        key = os.getenv("SUPABASE_SERVICE_KEY", "")
+        key = (os.getenv("SUPABASE_ANON_KEY", "")
+               or os.getenv("SUPABASE_SERVICE_KEY", ""))
     return key
 
 def _headers() -> dict:

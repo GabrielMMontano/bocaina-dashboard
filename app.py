@@ -199,7 +199,10 @@ def load_top10(data_ref: str) -> pd.DataFrame:
         order="sob_pct.desc.nullslast",
         limit=10,
     )
-    return df.apply(lambda c: pd.to_numeric(c, errors="coerce"))
+    for c in ["taxa_mtm_pct", "sob_pct", "duration_anos"]:
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce")
+    return df
 
 df_top = load_top10(data_deb)
 

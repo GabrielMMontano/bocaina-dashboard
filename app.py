@@ -52,6 +52,8 @@ def load_series(limit: int = 252) -> pd.DataFrame:
         order="data_ref.desc",
         limit=limit,
     )
+    if df.empty or "data_ref" not in df.columns:
+        return df
     df["data_ref"] = pd.to_datetime(df["data_ref"])
     num_cols = [c for c in df.columns if c != "data_ref"]
     df[num_cols] = df[num_cols].apply(lambda c: pd.to_numeric(c, errors="coerce"))

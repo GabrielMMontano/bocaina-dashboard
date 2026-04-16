@@ -26,6 +26,8 @@ def load(lim):
                "ipca_sob_aaa_aa_pct,ipca_sob_ex_cptm_pct,gap_pct,gap2_pct,"
                "var_dia_sob_todos,var_dia_gap",
         order="data_ref.desc", limit=lim)
+    if df.empty or "data_ref" not in df.columns:
+        return df
     df["data_ref"] = pd.to_datetime(df["data_ref"])
     num_cols = [c for c in df.columns if c != "data_ref"]
     df[num_cols] = df[num_cols].apply(lambda c: pd.to_numeric(c, errors="coerce"))

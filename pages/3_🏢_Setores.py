@@ -17,6 +17,8 @@ def load():
         select="setor,indexador,faixa_rating,qtd_ativos,sob_medio_pct,sob_min_pct,sob_max_pct,duration_media,data_ref",
         order="data_ref.desc",
     )
+    if df.empty or "data_ref" not in df.columns:
+        return df
     df["data_ref"] = pd.to_datetime(df["data_ref"])
     num_cols = [c for c in df.columns if c not in ("data_ref", "setor", "indexador", "faixa_rating")]
     df[num_cols] = df[num_cols].apply(lambda c: pd.to_numeric(c, errors="coerce"))

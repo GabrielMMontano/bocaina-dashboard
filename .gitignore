@@ -1,0 +1,37 @@
+# Dados sensíveis — nunca no Git
+dashboard.db
+*.db
+*.db-shm
+*.db-wal
+
+Carteiras_*/
+Base_Bocaina/
+Curva_NTNB/
+Deb_Anbima/
+Futuros_DI/
+Futuros_DAP/
+Indices_IMAB/
+Indices_IMAB5/
+PerfAttr/
+
+*.xlsx
+*.xls
+*.zip
+*.csv
+*.env
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

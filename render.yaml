@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: bocaina-dashboard
+    runtime: docker
+    plan: starter
+    region: oregon
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 5
+    envVars:
+      - key: DB_PATH
+        value: /data/dashboard.db
+      - key: BASIC_AUTH_USER
+        sync: false
+      - key: BASIC_AUTH_PASS
+        sync: false
+    healthCheckPath: /

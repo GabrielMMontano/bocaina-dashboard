@@ -1,0 +1,49 @@
+# Dados sensíveis
+dashboard.db
+*.db
+*.db-shm
+*.db-wal
+
+Carteiras_*/
+Base_Bocaina/
+Curva_NTNB/
+Deb_Anbima/
+Futuros_DI/
+Futuros_DAP/
+Indices_IMAB/
+Indices_IMAB5/
+PerfAttr/
+
+*.xlsx
+*.xls
+*.zip
+*.csv
+*.env
+.env
+
+# ETL (não vai pro servidor)
+etl/
+run_pipeline.py
+run_tasks.py
+indicadores.log
+pipeline.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Logs
+*.log
+
+# Git e docs
+.git/
+.gitignore
+README*
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db

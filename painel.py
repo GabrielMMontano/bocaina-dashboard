@@ -211,7 +211,11 @@ def _build_funds():
     return funds
 
 
-FUNDS = _build_funds()
+try:
+    FUNDS = _build_funds()
+except Exception as e:
+    print(f"[WARN] DB indisponível em {DB_PATH}: {e}. Iniciando com FUNDS vazio.", flush=True)
+    FUNDS = {}
 
 
 # ══════════════════════════════════════════════════════════════════════════════
